@@ -17,17 +17,19 @@ def createParser():
 			
 		Основные параметры:
 			необходимо указать один из основных параметров
-			-m [MESSAGE], --message [MESSAGE]	сообщение, на основании которого необходимо 												создать цифровую подпись.
-			-f [FILE], --file [FILE]			путь до файла с сообщением.
 			
-		Второстепенные параметры:
+			-m [MESSAGE], --message [MESSAGE]				сообщение, на основании которого
+															необходимо  создать цифровую
+															подпись.
+			-f [FILE], --file [FILE]						путь до файла с сообщением.
 			-p {SS512,SS1024,MNT159,MNT201,MNT224},			параметры эллиптической
 			--params {SS512,SS1024,MNT159,MNT201,MNT224}	кривой.
 			
+		Второстепенные параметры:
 			-d, --debug										вывод подробной ифнормации.
 	
 	Исключения:
-		NoMessageOrFile: Возникает при неправильном запуске скрипта.
+		StartingError: Возникает при неправильном запуске скрипта.
 	"""
 	
 	parser = argparse.ArgumentParser(
@@ -106,15 +108,15 @@ def createParser():
 		default = 'signature.key',
 		help = 'имя файла с цифровой подписью.'
 	)
-	
-	minor_group = parser.add_argument_group(title = 'Второстепенные параметры')
-	minor_group.add_argument(
+	main_group.add_argument(
 		'-p',
 		'--params',
 		choices = ['SS512', 'SS1024', 'MNT159', 'MNT201', 'MNT224'],
 		default = 'SS512',
 		help = 'параметры эллиптической кривой.'
 	)
+	
+	minor_group = parser.add_argument_group(title = 'Второстепенные параметры')
 	minor_group.add_argument(
 		'--debug',
 		action = 'store_const',
@@ -131,8 +133,7 @@ class Error(Exception):
 	pass
  
 class StartingError(Error):
-	"""Сообщение или файл не найден
-	
+	"""Неправильный ввод аргументов при запуске	
 	Возникает при неправильном запуске скрипта.
  
 	Атрибуты:
@@ -142,8 +143,7 @@ class StartingError(Error):
 		self.message = message
  
 class ApplicationError(Error):
-	"""
-		Возникает при внутренней ошибке приложения.
+	"""Возникает при внутренней ошибке приложения.
  
 	Атрибуты:
 		message 		объяснение ошибки
